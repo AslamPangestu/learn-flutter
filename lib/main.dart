@@ -1,85 +1,68 @@
-// import 'package:first_app/screens/home.dart';
-import 'package:flutter/material.dart'; //widget material design
+import 'package:flutter/material.dart';
 
-//main function
 void main() {
   runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "UI Widget",
-      // home: Home(),
-      home: Scaffold(
-        appBar: AppBar(title: Text("Test Long List View")),
-        // appBar: AppBar(title: Text("Test List View")),
-        // body: getListView(),
-        body: getLongListView(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            debugPrint('FAB Click');
-          },
-          child: Icon(Icons.add),
-          tooltip: 'Add more item',
+    title: "Stateful Example",
+    home: FavouriteCity(),
+  ));
+}
+
+class FavouriteCity extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _FavouriteCityState();
+  }
+}
+
+class _FavouriteCityState extends State<FavouriteCity> {
+  String nameCity = "";
+  var _currencies = ['Rupees', 'Rupiah', 'Dollar'];
+  var _currenciesDefault = "Rupees";
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Example State"),
+      ),
+      body: Container(
+        margin: EdgeInsets.all(20.0),
+        child: Column(
+          children: <Widget>[
+            TextField(
+              onSubmitted: (String userInput) {
+                setState(() {
+                  nameCity = userInput;
+                });
+              },
+            ),
+            DropdownButton<String>(
+              items: _currencies.map((String dropdownItem) {
+                return DropdownMenuItem<String>(
+                  value: dropdownItem,
+                  child: Text(dropdownItem),
+                );
+              }).toList(),
+              onChanged: (String selectedItem) {
+                _onDropDownItemSelected(selectedItem);
+              },
+              value: _currenciesDefault == "" ? null : _currenciesDefault,
+            ),
+            Padding(
+              padding: EdgeInsets.all(30.0),
+              child: Text(
+                "Your next city is $nameCity",
+                style: TextStyle(fontSize: 20.0),
+              ),
+            )
+          ],
         ),
-      )));
-}
-
-List<String> getListElements() {
-  var items = List<String>.generate(20, (counter) => "Item $counter");
-  return items;
-}
-
-void showSnackbar(BuildContext context, String item) {
-  var snackbar = SnackBar(
-    content: Text("You just tapped $item"),
-    action: SnackBarAction(
-      onPressed: () {
-        debugPrint('Undo ');
-      },
-      label: "Undo",
-    ),
-  );
-  Scaffold.of(context).showSnackBar(snackbar);
-}
-
-Widget getLongListView() {
-  var listItems = getListElements();
-  var listView = ListView.builder(
-    itemCount: listItems.length,
-    itemBuilder: (context, index) {
-      return ListTile(
-        title: Text(listItems[index]),
-        trailing: Icon(Icons.arrow_right),
-        onTap: () {
-          showSnackbar(context, listItems[index]);
-        },
-      );
-    },
-  );
-  return listView;
-}
-
-Widget getListView() {
-  var listView = ListView(
-    children: <Widget>[
-      ListTile(
-        leading: Icon(Icons.landscape),
-        title: Text("Landscape"),
-        subtitle: Text("Great View"),
-        trailing: Icon(Icons.wb_sunny),
-        onTap: () {
-          debugPrint("Landscape tap");
-        },
       ),
-      ListTile(
-        leading: Icon(Icons.laptop_chromebook),
-        title: Text("Windows"),
-      ),
-      ListTile(
-        leading: Icon(Icons.phone),
-        title: Text("Phone"),
-      ),
-      Text("Another element"),
-      Container(color: Colors.red, height: 50.0)
-    ],
-  );
-  return listView;
+    );
+  }
+
+  void _onDropDownItemSelected(String newValueSelected) {
+    setState(() {
+      this._currenciesDefault = newValueSelected;
+    });
+  }
 }
